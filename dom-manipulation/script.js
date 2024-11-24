@@ -113,7 +113,7 @@ document.body.appendChild(addQuoteButton);
 
 // Create "Export Quotes" button to download quotes as JSON:
 const exportButton = document.createElement('button');
-exportButton.textContent = "Export Quotes to JSON";
+exportButton.textContent = "Export Quotes";
 exportButton.addEventListener('click', exportToJson);
 document.body.appendChild(exportButton);
 
