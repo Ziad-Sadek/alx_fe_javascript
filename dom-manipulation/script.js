@@ -112,27 +112,9 @@ addQuoteButton.addEventListener('click', createAddQuoteForm);
 document.body.appendChild(addQuoteButton);
 
 // Create "Export Quotes" button to download quotes as JSON:
-const exportButton = document.createElement('button');
-exportButton.textContent = "Export Quotes";
+const exportButton = document.getElementById('exportButton');
 exportButton.addEventListener('click', exportToJson);
-document.body.appendChild(exportButton);
 
-// Create "Import Quotes" button to upload quotes from JSON file:
-const importButton = document.createElement('button');
-importButton.textContent = "Import Quotes from JSON";
-const importFileInput = document.createElement('input');
-importFileInput.type = 'file';
-importFileInput.accept = '.json';
-importFileInput.id = 'importFile';
-importFileInput.style.display = 'none';
-document.body.appendChild(importButton);
-document.body.appendChild(importFileInput);
-
-importButton.addEventListener('click', function(){
-    importFileInput.click();
-});
-
-importFileInput.addEventListener('change', importToJson);
 
 
 // Show a random quote when the page loads:
