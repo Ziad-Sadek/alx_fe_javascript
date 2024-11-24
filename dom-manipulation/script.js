@@ -7,10 +7,26 @@ let quotes = [
     { text: "In the middle of the difficulty lies opportunity.", category: "Opportunity" }
 ];
 
+// Load Quotes from LocalStorage:
+function loadQuotes() {
+    const storedQuotes = localStorage.getItem('quotes');
+    if (storedQuotes) {
+        quotes = JSON.parse(storedQuotes);
+    }
+}
+
+// Save quotes to localStorage:
+function saveQuotes() {
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+}
+
 // Function to display random quote:
 function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
+
+// Storing the last viewed quote in sessionStorage:
+sessionStorage.setItem('lastViewedQuote', JSON.stringify(randomQuote));
 
 //Display the quote and the category in the div:
     const quoteDisplay = document.getElementById('quoteDisplay');
@@ -64,6 +80,28 @@ function createAddQuoteForm() {
     });
 };
 
+// Adding a function to export quotes to JSON file:
+function exportToJson() {
+    const jsonBlob = new Blob([JSON.stringify('quotes', null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(jsonBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quotes.json';
+    a.click();
+}
+
+// Adding a function to import quotes from JSON file:
+function importToJson(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(event) {
+        const importedQuotes = JSON.parse(event.target.result);
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        alert('Quotes Imported Successfully!');
+    };
+    fileReader.readAsText(event.target.files[0]);
+}
+
 // Add event listener to "Show New Quote" button:
 document.getElementById('newquote').addEventListener('click', showRandomQuote);
 
@@ -73,5 +111,34 @@ addQuoteButton.textContent = "Add Quote";
 addQuoteButton.addEventListener('click', createAddQuoteForm);
 document.body.appendChild(addQuoteButton);
 
+// Create "Export Quotes" button to download quotes as JSON:
+const exportButton = document.createElement('button');
+exportbutton.textContent = "Export Quotes to JSON";
+exportButton.addEventListener('click', exportToJson);
+document.body.appendChild(exportButton);
+
+// Create "Import Quotes" button to upload quotes from JSON file:
+const importButton = document.createElement('button');
+importButton.textContent = "Import Quotes from JSON";
+const importFileInput = document.createElement('input');
+importFileInput.type = 'file';
+importFileInput.accept = '.json';
+importFileInput.id = 'importFile';
+importFileInput.style = 'none';
+importButton.addEventListener('click', importToJson);
+document.body.appendChild(importButton);
+document.body.appendChild(importFileInput);
+
+importButton.addEventListener('click', function(){
+    importFileInput.click();
+})
+
+importFileInput.addEventListener('change', importToJson);
+
+
 // Show a random quote when the page loads:
-window.onload = showRandomQuote;
+window.onload = function() {
+    loadQuotes();
+    showRandomQuote();
+};
+
