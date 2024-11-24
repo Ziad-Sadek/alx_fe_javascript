@@ -82,7 +82,7 @@ function createAddQuoteForm() {
 
 // Adding a function to export quotes to JSON file:
 function exportToJson() {
-    const jsonBlob = new Blob([JSON.stringify('quotes', null, 2)], { type: 'application/json' });
+    const jsonBlob = new Blob([JSON.stringify(quotes, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(jsonBlob);
     const a = document.createElement('a');
     a.href = url;
@@ -113,7 +113,7 @@ document.body.appendChild(addQuoteButton);
 
 // Create "Export Quotes" button to download quotes as JSON:
 const exportButton = document.createElement('button');
-exportbutton.textContent = "Export Quotes to JSON";
+exportButton.textContent = "Export Quotes to JSON";
 exportButton.addEventListener('click', exportToJson);
 document.body.appendChild(exportButton);
 
@@ -124,14 +124,13 @@ const importFileInput = document.createElement('input');
 importFileInput.type = 'file';
 importFileInput.accept = '.json';
 importFileInput.id = 'importFile';
-importFileInput.style = 'none';
-importButton.addEventListener('click', importToJson);
+importFileInput.style.display = 'none';
 document.body.appendChild(importButton);
 document.body.appendChild(importFileInput);
 
 importButton.addEventListener('click', function(){
     importFileInput.click();
-})
+});
 
 importFileInput.addEventListener('change', importToJson);
 
