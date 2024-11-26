@@ -217,7 +217,7 @@ async function addNewQuote(quoteText, quoteCategory) {
 
 // Sending the new quote to the server:
     try {
-        const respones = await fetch(SERVER_URL, {
+        const response = await fetch(SERVER_URL, {
             method:'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({ title: quoteText, body: quoteCategory })
