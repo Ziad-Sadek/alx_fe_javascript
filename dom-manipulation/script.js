@@ -1,3 +1,28 @@
+syncWithServer();
+function showSyncNotification(message) {
+    // Creating a div element for the notification:
+    const notification = document.createElement('div');
+
+    // The message content of the notification:
+    notification.textContent = message;
+
+    // Styling for the notification:
+    notification.style.position = 'fixed';
+    notification.style.bottom = '20px';
+    notification.style.left = '20px';
+    notification.style.padding = '10px';
+    notification.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    notification.style.color = 'white';
+    notification.style.borderRadius = '5px';
+
+    document.body.appendChild(notification);
+
+    // Remove the notification after 3sec:
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
 // Array to store quote:
 let quotes = [
     { text: "The only way to do great work is to love what you do.", category: "Inspiration" },
@@ -160,6 +185,76 @@ function loadCategoryFilter() {
     }
 }
 
+// Defining the mock server endpoint:
+const SERVER_URL = 'https://jsonplaceholder.typicode.com/posts';
+
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch(SERVER_URL);
+        const serverQuotes = await response.json();
+
+        const serverFormattedQuotes = serverQuotes.slice(0, 5).map(post => ({
+            text: post.title,
+            category: post.body 
+        }));
+
+        resolveConflicts(serverFormattedQuotes);
+        console.log('Quotes fetched from server.', serverQuotes);
+        // Then we gonna log the quotes fetched from server to the console:
+       showSyncNotification('Data has been successfully synced with the server.');
+    } catch (error) {
+        console.log("Error fetching quotes from server:", error);
+    }
+}
+
+// Function to add new quote and update server:
+async function addNewQuote(quoteText, quoteCategory) {
+    const newQuote = {
+        text:quoteText,
+        category:quoteCategory
+    };
+
+
+// Sending the new quote to the server:
+    try {
+        const respones = await fetch(SERVER_URL, {
+            method:'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ title: quoteText, body: quoteCategory })
+        });
+
+        if (response.ok) {
+            console.log("New quote added and synced with server");
+        } else {
+            console.log("Failed to add quote to server");
+        }
+
+    } catch (error) {
+        console.error("Error adding quote to server", error);
+    }
+}
+
+// periodic data syncing:
+function syncWithServer() {
+    setInterval(() => {
+        console.log("Checking for updates from the server...");
+        fetchQuotesFromServer(); //fetch data every 10sec
+    }, 10000);
+    showSyncNotification("Data has been successfully synced with the server.");
+}
+
+// Conflict resolution: Server data takes precedence:
+function resolveConflicts(serverQuotes) {
+
+    //Compare local quotes with server quotes:
+    if (quotes.length !== serverQuotes.length) {
+        console.log("Conflicts detected: Syncing local data with server...");
+        quotes = serverQuotes; // Overwrite local quotes with server data
+        saveQuotes();
+        showSyncNotification("Data synced from the server.");
+    }
+}
+
 // Save the selected category to local storage when changed:
 document.getElementById('categoryFilter').addEventListener('change', function() {
     localStorage.setItem('lastSelectedCategory', this.value);
@@ -188,5 +283,6 @@ window.onload = function() {
     loadCategoryFilter()
     filterQuotes();
     showRandomQuote();
+    syncWithServer();
 };
 
