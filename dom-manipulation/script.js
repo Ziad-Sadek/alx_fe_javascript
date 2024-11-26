@@ -240,7 +240,7 @@ function syncQuotes() {
         console.log("Checking for updates from the server...");
         fetchQuotesFromServer(); //fetch data every 10sec
     }, 10000);
-    showSyncNotification("Data has been successfully synced with the server.");
+    showSyncNotification("Quotes synced with server.");
 }
 
 // Conflict resolution: Server data takes precedence:
