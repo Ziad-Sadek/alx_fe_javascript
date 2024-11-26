@@ -1,4 +1,4 @@
-syncWithServer();
+syncQuotes();
 function showSyncNotification(message) {
     // Creating a div element for the notification:
     const notification = document.createElement('div');
@@ -235,7 +235,7 @@ async function addNewQuote(quoteText, quoteCategory) {
 }
 
 // periodic data syncing:
-function syncWithServer() {
+function syncQuotes() {
     setInterval(() => {
         console.log("Checking for updates from the server...");
         fetchQuotesFromServer(); //fetch data every 10sec
@@ -283,6 +283,6 @@ window.onload = function() {
     loadCategoryFilter()
     filterQuotes();
     showRandomQuote();
-    syncWithServer();
+    syncQuotes();
 };
 
